@@ -1,0 +1,109 @@
+{extend name="layout/layout"}
+
+{block name="css"}
+<link href="admin_layer/layer/layer.css" rel="stylesheet">
+<link rel="stylesheet" href="admin_public/ztree/css/zTreeStyle/zTreeStyle.css" type="text/css">
+{/block}
+
+{block name="page-head"}
+<!-- page heading start-->
+<div class="page-heading">
+    <h3>
+        权限管理
+    </h3>
+    <ul class="breadcrumb">
+        <li>
+            <a href="#">权限管理</a>
+        </li>
+        <li class="active"> 权限编辑 </li>
+    </ul>
+</div>
+<!-- page heading end-->
+{/block}
+
+{block name="content"}
+
+<form role="form" id="form">
+    <div class="form-group">
+        <label for="exampleInputPassword1">权限名称</label>
+        <input type="text" class="form-control" id="exampleInputPassword1" placeholder="" name="name" value="{$permission.name}">
+    </div>
+
+    <div class="form-group" >
+        <label for="">所属上级</label>
+        <input type="text" name="parent_name" class="form-control" disabled  value="{$permission.parent}"/>
+        <input type="hidden" name="parent_id" value="0" class="form-control"/>
+        <input type="hidden" name="id" value="{$permission.id}">
+
+        <div class="zTreeDemoBackground left" >
+            <ul id="treeDemo" class="ztree"></ul>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="exampleInputPassword1">简介</label>
+        <input type="text" class="form-control"  placeholder="remark" name="intro">
+    </div>
+
+    <button type="button" class="btn btn-primary" id="submit">保存</button>
+
+</form>
+{/block}
+
+{block name="js"}
+<script src="admin_layer/layer/layer.js"></script>
+<script type="text/javascript" src="admin_public/ztree/js/jquery.ztree.core.js"></script>
+<script type="text/javascript" src="admin_public/ztree/js/jquery.ztree.excheck.js"></script>
+<script type="text/javascript">
+    $(function () {
+        $('#submit').click(function () {
+            $.ajax({'type':'post','dataType':'json','url':location.protocol+'//'+window.location.host+'/admin/permission/edit',
+                'data':{'data':$('#form').serialize()},
+                'success':function (e) {
+                    if(e.status === 1){
+                        layer.msg('修改成功',{time:1000},function () {
+                            window.location.href = location.protocol+'//'+window.location.host+'/admin/permission/index'
+                        });
+                    }
+                }
+            })
+        })
+    });
+
+    var setting = {
+        treeId: 'treeDemo',
+
+        data: {
+            key: {
+                title:"t"
+            },
+            simpleData: {
+                enable: true
+            }
+        },
+
+        callback: {
+            onClick: onClick,
+
+        },
+
+    };
+    var _str = '{$list}';
+    var zNodes = $.parseJSON(_str);
+    function onClick(event, treeId, treeNode, clickFlag) {
+        var _obj = $('input[name="parent_name"]').val(treeNode.name);
+        if(treeNode.id <= 0){
+            $('input[name="parent_id"]').val(0);
+        }else {
+            $('input[name="parent_id"]').val(treeNode.id);
+        }
+    }
+
+    //>> 初始化树
+    $(document).ready(function(){
+        $.fn.zTree.init($("#treeDemo"), setting, zNodes);
+
+    });
+    //-->
+</script>
+{/block}

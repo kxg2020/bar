@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<input type="button" value="发送请求">
+<hr>
+
+<form action="http://192.168.171.51/api/file/index?index=putfile&usertype=2&loginno=1&filename=11&filelength=12345&putto=44032710000308" method="post" enctype="multipart/form-data">
+
+    <input type="file" name="11">
+    <input type="submit" value="提交">
+</form>
+</body>
+<script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script>
+    $(function () {
+        $('input[type = button]').click(function () {
+            $.ajax({
+                'dataType':'json',
+                'type':'post',
+                'url':location.protocol+'//'+window.location.host+'/api/put/index?index=chat&usertype=1&loginno=18562351265',
+                'data':{
+                    'chat_content':'this is user to staff'+Math.random(),
+                    'chat_time':Math.random(0,99999),
+                    'chat_object':'1',
+                    'chat_from':'18562351265',
+                    'chat_to':'1',
+                },
+                'success':function(e){
+                    console.log(e)
+                }
+            });
+        });
+    });
+</script>
+</html>

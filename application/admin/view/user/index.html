@@ -1,0 +1,157 @@
+{extend name="layout/layout"}
+
+
+{block name="css"}
+<link rel="stylesheet" href="admin_layer/layer/layer.css">
+<link href="admin_laypage/css/layui.css" rel="stylesheet">
+{/block}
+
+{block name="title"}
+客服管理
+{/block}
+
+{block name="page-head"}
+<!-- page heading start-->
+<div class="page-heading">
+   <div class="panel-body">
+       <h3>
+           用户管理
+       </h3>
+       <ul class="breadcrumb">
+           <li>
+               <a href="#">用户管理</a>
+           </li>
+           <li class="active"> 用户列表 </li>
+       </ul>
+   </div>
+
+</div>
+<!-- page heading end-->
+{/block}
+
+{block name="content"}
+
+<div class="row">
+    <div class="col-sm-12">
+
+        <div class="panel-body">
+            <!--搜索开始-->
+            <form class="form-inline" action="{:url('/admin/user/index')}" method="get">
+                <div class="form-group">
+                    <label>用户账号</label>
+                    <input type="text" class="form-control" name="username" value="" placeholder="请输入用户账号">
+                </div>
+
+                <div class="form-group">
+                    <label>登录开始时间</label>
+                    <input type="date" class="form-control" name="start" value="" placeholder="请输入开始时间">
+                </div>
+                <div class="form-group">
+                    <label>登录结束时间</label>
+                    <input type="date" class="form-control" name="end" value="" placeholder="请输入结束时间">
+                </div>
+
+                &nbsp;&nbsp;
+                <button type="submit" class="btn btn-primary">搜索</button>
+                &nbsp;
+                <button type="button" class="btn btn-success" id="exportExcel">导出</button>
+                &nbsp;&nbsp;
+                <span>共计：{$count}&nbsp;条记录</span>
+            </form>
+            <!--搜索结束-->
+            <!--导出开始-->
+            <form action="{:url('/admin/user/export')}" method="get" class="form" id="export">
+                <input type="hidden" class="form-control" name="username" value="{:input('username')}" >
+                <input type="hidden" class="form-control" name="start" value="{:input('start')}" >
+                <input type="hidden" class="form-control" name="end" value="{:input('end')}">
+            </form>
+        </div>
+
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="panel-body">
+            <input type="hidden" value="{$page}" id="count">
+            <table class="table table-invoice table-bordered table-hover">
+                <thead>
+                <tr align="center">
+                    <td>编号</td>
+                    <td>用户名</td>
+                    <td>密码</td>
+                    <td>最后登录</td>
+                    <td>操作</td>
+                </tr>
+                </thead>
+                <tbody id="tbody">
+                {volist name="user" id="us"}
+                <tr align="center">
+                    <td>{$us.user_id}</td>
+                    <td>{$us.username}</td>
+                    <td>{$us.password}</td>
+                    <td>{$us.last_login_time}</td>
+                    <td>
+                        <input type="button" class="btn btn-info edit" value="编辑" data-id="{$us.user_id}">
+                        &nbsp;
+                        <input type="button" class="btn btn-danger delete" value="删除" data-id="{$us.user_id}">
+                    </td>
+                </tr>
+                {/volist}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div id="demo"></div>
+{/block}
+
+{block name="js"}
+<script src="admin_layer/layer/layer.js"></script>
+<script src="admin_laypage/layui.js"></script>
+<script src="admin_laypage/laypage.js"></script>
+<script>
+    $('#exportExcel').click(function () {
+
+        $('#export').submit();
+    });
+    $(function(){
+        layui.use(['laypage', 'layer'], function(){
+            var laypage = layui.laypage,layer = layui.layer;
+            laypage({
+                cont: 'demo'
+                ,pages: $('#count').val()
+                ,skip: true
+                ,jump: function(obj, first){
+                    if(!first){
+                        $.ajax({
+                            'type':'post',
+                            'dataType':'json',
+                            'url':location.protocol+'//'+window.location.host+'/staff/index',
+                            'data':{
+                                'pgNum':obj.curr,
+                                'pgSize':10,
+                            },
+                            success:function(result){
+                                $('#tbody').html('');
+                                $.each(result.data,function (k,v) {
+                                    $('#tbody').append(
+                                        '<tr align="center">' +
+                                        '        <td>'+v.user_id+'</td>\n' +
+                                        '        <td>'+v.password+'</td>\n' +
+                                        '        <td><input type="button" class="btn btn-info edit" value="编辑" data-id="'+v.user_id+'">\n' +
+                                        '                &nbsp;\n' +
+                                        '                <input type="button" class="btn btn-danger delete" value="删除" data-id="'+v.user_id+'"></td>\n' +
+                                        '</tr>'
+                                    );
+                                })
+
+                            }
+                        });
+                    }
+                }
+            });
+        });
+    });
+</script>
+{/block}

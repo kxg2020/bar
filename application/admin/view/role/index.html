@@ -1,0 +1,97 @@
+{extend name="layout/layout"}
+
+{block name="css"}
+
+{/block}
+
+
+{block name="title"}
+权限管理
+{/block}
+
+{block name="page-head"}
+<!-- page heading start-->
+<div class="page-heading">
+    <div class="panel-body">
+        <h3>
+            角色管理
+        </h3>
+        <ul class="breadcrumb">
+            <li>
+                <a href="#">角色管理</a>
+            </li>
+            <li class="active"> 角色列表 </li>
+        </ul>
+
+        <a href="{:url('role/insert')}"><input type="button" class="btn btn-info" value="角色添加"></a>
+    </div>
+
+</div>
+<!-- page heading end-->
+{/block}
+
+
+{block name="content"}
+<div class="row">
+    <div class="col-sm-12">
+
+            <div class="panel-body">
+
+                    <table  class="table table-invoice table-bordered table-hover" id="dynamic-table">
+                        <thead>
+                        <tr class="text-center">
+                            <td>编号</td>
+                            <td>角色名称</td>
+                            <td class="hidden-phone">操作</td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {if condition="empty($roles)"}
+                            <tr>
+                                <td colspan="9">暂无数据</td>
+                            </tr>
+                        {/if}
+                        {volist name="roles" id="ro"}
+                        <tr class="text-center">
+
+                            <td>{$ro.id}</td>
+                            <td>
+
+                                {$ro.role_name}
+                            </td>
+                            <td class="hidden-phone">
+                                <a href="{:url('/admin/role/edit')}?id={$ro.id}"><input type="button" class="btn btn-info edit" data-id="{$ro.id}" value="授权"></a>
+                            </td>
+                        </tr>
+                        {/volist}
+                        </tbody>
+                    </table>
+
+            </div>
+
+    </div>
+</div>
+
+{/block}
+
+
+{block name="js"}
+<script>
+    $(function () {
+
+        $('.delete').click(function () {
+
+            var id = $(this).attr('data-id');
+            $.ajax({'type':'post','dataType':'json','url':location.protocol+'//'+window.location.host+'/admin/permission/delete',
+                'data':{'id':id},
+                'success':function (e) {
+                    if(e.status === 1){
+                        $(this).parent().parent().remove();
+                        layer.msg('删除成功');
+                    }
+                }.bind(this)
+            })
+        })
+    })
+</script>
+{/block}

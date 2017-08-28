@@ -1,0 +1,95 @@
+{extend name="layout/layout"}
+
+{block name="css"}
+<link href="admin_layer/layer/layer.css" rel="stylesheet">
+<link rel="stylesheet" href="admin_public/ztree/css/zTreeStyle/zTreeStyle.css" type="text/css">
+{/block}
+
+{block name="page-head"}
+<!-- page heading start-->
+<div class="page-heading">
+    <h3>
+        权限管理
+    </h3>
+    <ul class="breadcrumb">
+        <li>
+            <a href="#">权限管理</a>
+        </li>
+        <li class="active"> 权限添加 </li>
+    </ul>
+</div>
+<!-- page heading end-->
+{/block}
+
+{block name="content"}
+
+<form role="form" id="form">
+    <div class="form-group">
+        <label for="exampleInputPassword1">权限名称</label>
+        <input type="text" class="form-control" id="exampleInputPassword1" placeholder="" name="name">
+    </div>
+
+    <div class="form-group" >
+        <label for="">所属上级</label>
+        <input type="text" name="parent_name" class="form-control" disabled />
+        <input type="hidden" name="parent_id" value="0" class="form-control"/>
+
+        <div class="zTreeDemoBackground left" >
+            <ul id="treeDemo" class="ztree"></ul>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="exampleInputPassword1">路由</label>
+        <input type="text" class="form-control"  placeholder="route" name="route">
+    </div>
+    <br>
+    <br>
+    <button type="button" class="btn btn-info form-control" id="submit" >提交</button>
+
+</form>
+{/block}
+
+{block name="js"}
+<script src="admin_layer/layer/layer.js"></script>
+<script type="text/javascript" src="admin_public/ztree/js/jquery.ztree.core.js"></script>
+<script type="text/javascript" src="admin_public/ztree/js/jquery.ztree.excheck.js"></script>
+<script type="text/javascript">
+    var setting = {
+        treeId: 'treeDemo',
+
+        data: {
+            key: {
+                title:"t"
+            },
+            simpleData: {
+                enable: true
+            }
+        },
+
+        callback: {
+            onClick: onClick,
+
+        },
+
+    };
+    var _str = '{$list}';
+    var zNodes = $.parseJSON(_str);
+    function onClick(event, treeId, treeNode, clickFlag) {
+        var _obj = $('input[name="parent_name"]').val(treeNode.name);
+        if(treeNode.id <= 0){
+            $('input[name="parent_id"]').val(0);
+        }else {
+            $('input[name="parent_id"]').val(treeNode.id);
+        }
+    }
+
+    //>> 初始化树
+    $(document).ready(function(){
+        $.fn.zTree.init($("#treeDemo"), setting, zNodes);
+
+    });
+    //-->
+</script>
+<script src="admin_js/permission.js"></script>
+{/block}

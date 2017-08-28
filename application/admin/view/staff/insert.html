@@ -1,0 +1,83 @@
+{extend name="layout/layout"}
+
+{block name="css"}
+<link href="admin_layer/layer/layer.css" rel="stylesheet">
+{/block}
+
+{block name="page-head"}
+<!-- page heading start-->
+<div class="page-heading">
+    <h3>
+        客服管理
+    </h3>
+    <ul class="breadcrumb">
+        <li>
+            <a href="#">客服管理</a>
+        </li>
+        <li class="active"> 客服添加 </li>
+    </ul>
+</div>
+<!-- page heading end-->
+{/block}
+
+{block name="content"}
+
+<form role="form" id="form">
+    <div class="form-group">
+        <label for="exampleInputEmail1">类型</label>
+        <select class="form-control m-bot15" id="exampleInputEmail1" name="type">
+            <option value="1">技术</option>
+            <option value="2">客服</option>
+            <option value="3">销售</option>
+            <option value="4">其他</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="exampleInputPassword1">姓名</label>
+        <input type="text" class="form-control" id="exampleInputPassword1" placeholder="username" name="username">
+    </div>
+
+    <div class="form-group">
+        <label for="exampleInputPassword1">号码</label>
+        <input type="number" class="form-control"  placeholder="telephone" maxlength="11" name="telephone">
+    </div>
+
+    <div class="form-group">
+        <label for="exampleInputPassword1">邮箱</label>
+        <input type="email" class="form-control"  placeholder="emamil" name="email">
+    </div>
+
+    <div class="form-group">
+        <label for="exampleInputPassword1">备注</label>
+        <input type="text" class="form-control"  placeholder="remark" name="remark">
+    </div>
+
+    <div class="form-group">
+        <input type="file" id="file_upload">
+        <p class="help-block">点击上传头像</p>
+    </div>
+
+    <div class="form-group">
+
+        <div id="images">
+
+        </div>
+    </div>
+
+
+    <div class="checkbox">
+        <label>
+            <input type="checkbox" name="status"> 开启服务
+        </label>
+    </div>
+
+
+    <button type="button" class="btn btn-primary form-control">提交</button>
+</form>
+{/block}
+
+{block name="js"}
+<script src="admin_js/jquery.html5upload.js"></script>
+<script src="admin_layer/layer/layer.js"></script>
+<script type="text/javascript" src="admin_js/favor.js"></script>
+{/block}

@@ -1,0 +1,109 @@
+{extend name="layout/layout"}
+
+{block name="css"}
+<link href="admin_layer/layer/layer.css" rel="stylesheet">
+<link rel="stylesheet" href="admin_public/ztree/css/zTreeStyle/zTreeStyle.css" type="text/css">
+{/block}
+
+{block name="page-head"}
+<!-- page heading start-->
+<div class="page-heading">
+    <h3>
+        角色管理
+    </h3>
+    <ul class="breadcrumb">
+        <li>
+            <a href="#">角色管理</a>
+        </li>
+        <li class="active"> 角色添加 </li>
+    </ul>
+</div>
+<!-- page heading end-->
+{/block}
+
+{block name="content"}
+
+<form role="form" id="form" method="post" action="{:url('role/insert')}">
+    <div class="form-group">
+        <label for="exampleInputPassword1">角色名称</label>
+        <input type="text" class="form-control" id="exampleInputPassword1" placeholder="" name="rolename">
+    </div>
+
+    <div class="form-group" >
+        <label >角色权限</label>
+        <input type="hidden" name="permission" class="form-control" value=""/>
+        <div class="zTreeDemoBackground left" >
+            <ul id="treeDemo" class="ztree"></ul>
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary form-control">提交</button>
+
+</form>
+{/block}
+
+{block name="js"}
+<script src="admin_layer/layer/layer.js"></script>
+<script type="text/javascript" src="admin_public/ztree/js/jquery.ztree.core.js"></script>
+<script type="text/javascript" src="admin_public/ztree/js/jquery.ztree.excheck.js"></script>
+<script>
+    //>> 初始化树
+    $(document).ready(function(){
+        $.fn.zTree.init($("#treeDemo"), setting, zNodes);
+
+    });
+
+    //>> 设置参数
+    var setting = {
+
+        treeId: 'treeDemo',
+
+        data: {
+            key: {
+                title:"t"
+            },
+            simpleData: {
+                enable: true
+            },
+        },
+        check: {
+            enable: true,
+            chkStyle: "checkbox",
+            chkboxType: { "Y": "ps", "N": "ps" }
+        },
+
+        callback: {
+            onCheck:onCheck,
+
+        },
+
+    };
+    var _str = '{$list}';
+    var zNodes = $.parseJSON(_str);
+
+    // 回调函数
+    function onCheck(e, treeId, treeNode) {
+        var arr = [];
+        var tree = $.fn.zTree.getZTreeObj('treeDemo');
+        var treeData = tree.getCheckedNodes(true);
+        if (treeData.length != 0) {
+            for (var i = 0; i < treeData.length; i++) {
+                if (!treeData[i].isParent) {
+                    var json = {
+                        key : treeData[i].id,
+                        name:treeData[i].name
+                    };
+                    arr.push(json);
+                }
+            }
+        }
+        var brr = [];
+
+        for (i = 0; i< arr.length;++i){
+            brr.push(arr[i].key);
+        }
+        $('input[name = permission]').val(brr)
+
+    }
+</script>
+{/block}

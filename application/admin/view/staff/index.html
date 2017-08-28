@@ -1,0 +1,122 @@
+{extend name="layout/layout"}
+
+
+{block name="css"}
+<link rel="stylesheet" href="admin_layer/layer/layer.css">
+<link href="admin_laypage/css/layui.css" rel="stylesheet">
+{/block}
+
+{block name="title"}
+客服管理
+{/block}
+
+{block name="page-head"}
+<!-- page heading start-->
+<div class="page-heading">
+    <div class="panel-body">
+        <h3>
+            客服管理
+        </h3>
+        <ul class="breadcrumb">
+            <li>
+                <a href="#">客服管理</a>
+            </li>
+            <li class="active"> 客服列表 </li>
+        </ul>
+        <br>
+
+        <a href="{:url('staff/insert')}"><input type="button" class="btn btn-success" value="添加"></a>
+    </div>
+
+</div>
+<!-- page heading end-->
+{/block}
+
+{block name="content"}
+<div class="row">
+    <div class="col-sm-12">
+        <div class="panel-body">
+            <input type="hidden" value="{$page}" id="count">
+            <table class="table table-invoice table-bordered table-hover">
+                <thead>
+                <tr align="center">
+                    <td>编号</td>
+                    <td>名字</td>
+                    <td>类型</td>
+                    <td>电话</td>
+                    <td>邮箱</td>
+                    <td>操作</td>
+                </tr>
+                </thead>
+                <tbody id="tbody">
+                {volist name="staffs" id="staff"}
+                <tr align="center">
+                    <td>{$staff.staff_id}</td>
+                    <td>{$staff.staff_name}</td>
+                    <td>{$staff.staff_type}</td>
+                    <td>{$staff.staff_phone_number}</td>
+                    <td>{$staff.staff_email}</td>
+                    <td>
+                        <input type="button" class="btn btn-info edit" value="编辑" data-id="{$staff.staff_id}">
+                        &nbsp;
+                        <input type="button" class="btn btn-danger delete" value="删除" data-id="{$staff.staff_id}">
+                    </td>
+                </tr>
+                {/volist}
+                </tbody>
+            </table>
+            <div id="demo"></div>
+        </div>
+    </div>
+</div>
+{/block}
+
+{block name="js"}
+<script src="admin_layer/layer/layer.js"></script>
+<script src="admin_js/staff.js"></script>
+<script src="admin_laypage/layui.js"></script>
+<script src="admin_laypage/laypage.js"></script>
+<script>
+    $(function(){
+        layui.use(['laypage', 'layer'], function(){
+            var laypage = layui.laypage,layer = layui.layer;
+            laypage({
+                cont: 'demo'
+                ,pages: $('#count').val()
+                ,skip: true
+                ,jump: function(obj, first){
+                    if(!first){
+                        $.ajax({
+                            'type':'post',
+                            'dataType':'json',
+                            'url':location.protocol+'//'+window.location.host+'/staff/index',
+                            'data':{
+                                'pgNum':obj.curr,
+                                'pgSize':10,
+                            },
+                            success:function(result){
+                                $('#tbody').html('');
+                                $.each(result.data,function (k,v) {
+                                    $('#tbody').append(
+                                        '<tr align="center">' +
+                                        '        <td>'+v.staff_id+'</td>\n' +
+                                        '        <td>'+v.staff_name+'</td>\n' +
+                                        '        <td>'+v.staff_type+'</td>\n' +
+                                        '        <td>'+v.staff_phone_number+'</td>\n' +
+                                        '        <td>'+v.staff_email+'</td>\n' +
+                                        '        <td><input type="button" class="btn btn-info edit" value="编辑" data-id="'+v.staff_id+'">\n' +
+                                        '                &nbsp;\n' +
+                                        '                <input type="button" class="btn btn-danger delete" value="删除" data-id="'+v.staff_id+'"></td>\n' +
+                                        '</tr>'
+                                    );
+                                })
+
+                            }
+                        });
+                    }
+                }
+            });
+        });
+    });
+</script>
+{/block}

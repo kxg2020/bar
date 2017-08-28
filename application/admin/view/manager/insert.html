@@ -1,0 +1,76 @@
+{extend name="layout/layout"}
+
+{block name="css"}
+<link href="admin_layer/layer/layer.css" rel="stylesheet">
+<link rel="stylesheet" href="admin_public/ztree/css/zTreeStyle/zTreeStyle.css" type="text/css">
+{/block}
+
+{block name="page-head"}
+<!-- page heading start-->
+<div class="page-heading">
+    <h3>
+        账户管理
+    </h3>
+    <ul class="breadcrumb">
+        <li>
+            <a href="#">账户管理</a>
+        </li>
+        <li class="active"> 账户添加 </li>
+    </ul>
+</div>
+<!-- page heading end-->
+{/block}
+
+{block name="content"}
+
+<form role="form" id="form" action="{:url('manager/insert')}" method="post">
+    <div class="form-group">
+        <label for="exampleInputPassword1">账号</label>
+        <input type="text" class="form-control" id="exampleInputPassword1" placeholder="" name="username">
+    </div>
+
+    <div class="form-group">
+        <label for="exampleInputPassword2">密码</label>
+        <input type="text" class="form-control" id="exampleInputPassword2" placeholder="" name="password">
+    </div>
+    <div class="form-group">
+        <label for="exampleInputEmail1">角色</label>
+        <select class="form-control m-bot15" id="exampleInputEmail1" name="role">
+            {volist name="role" id="ro"}
+            <option value="{$ro.id}">{$ro.role_name}</option>
+            {/volist}
+        </select>
+    </div>
+    <br>
+    <br>
+    <button type="button" class="btn btn-primary form-control" id="submit">提交</button>
+
+</form>
+{/block}
+
+{block name="js"}
+<script src="admin_layer/layer/layer.js"></script>
+<script type="text/javascript" src="admin_public/ztree/js/jquery.ztree.core.js"></script>
+<script type="text/javascript" src="admin_public/ztree/js/jquery.ztree.excheck.js"></script>
+<script>
+    $('#submit').click(function () {
+        var username = $('input[name = username]').val()
+        var password = $('input[name = password]').val()
+        var role = $('select[name = role]').val()
+        if(username === ''){
+            layer.tips('账号不能为空','input[name = username]',{tips:3});
+            return false;
+        }
+        if(password === ''){
+            layer.tips('密码不能为空','input[name = password]',{tips:3});
+            return false;
+        }
+        if(role === ''){
+            layer.tips('角色不能为空','input[name = role]',{tips:3});
+            return false;
+        }
+        $('#form').submit();
+    })
+</script>
+
+{/block}

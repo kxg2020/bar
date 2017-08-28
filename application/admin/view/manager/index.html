@@ -1,0 +1,99 @@
+{extend name="layout/layout"}
+
+{block name="css"}
+
+{/block}
+
+
+{block name="title"}
+账户管理
+{/block}
+
+{block name="page-head"}
+<!-- page heading start-->
+<div class="page-heading">
+    <div class="panel-body">
+        <h3>
+            账户管理
+        </h3>
+        <ul class="breadcrumb">
+            <li>
+                <a href="#">账户管理</a>
+            </li>
+            <li class="active"> 账户列表 </li>
+        </ul>
+        <br>
+        <a href="{:url('manager/insert')}"><input type="button" class="btn btn-success" value="添加"></a>
+    </div>
+
+</div>
+<!-- page heading end-->
+{/block}
+
+
+{block name="content"}
+<div class="row">
+    <div class="col-sm-12">
+
+            <div class="panel-body">
+
+                    <table  class="table table-invoice table-bordered table-hover" id="dynamic-table">
+                        <thead>
+                        <tr class="text-center">
+                            <td>编号</td>
+                            <td>账户</td>
+                            <td>角色</td>
+                            <td>登录时间</td>
+                            <td class="hidden-phone">操作</td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {if condition="empty($user)"}
+                            <tr>
+                                <td colspan="9">暂无数据</td>
+                            </tr>
+                        {/if}
+                        {volist name="user" id="us"}
+                        <tr class="text-center">
+
+                            <td>{$us.id}</td>
+                            <td>{$us.username}</td>
+                            <td>{$us.role_name}</td>
+                            <td>{:date('Y-m-d H:i:s',$us['login_time'])}</td>
+                            <td class="hidden-phone">
+                                <input type="button" class="btn btn-danger delete" data-id="{$us.id}" value="删除">&nbsp;&nbsp;&nbsp;&nbsp;
+                                <a href="{:url('/admin/manager/edit')}?id={$us.id}"><input type="button" class="btn btn-info edit" data-id="{$us.id}" value="编辑"></a>
+                            </td>
+                        </tr>
+                        {/volist}
+                        </tbody>
+                    </table>
+
+            </div>
+
+    </div>
+</div>
+
+{/block}
+
+
+{block name="js"}
+<script>
+    $(function () {
+
+        $('.delete').click(function () {
+
+            var id = $(this).attr('data-id');
+            $.ajax({'type':'post','dataType':'json','url':location.protocol+'//'+window.location.host+'/admin/manager/delete',
+                'data':{'id':id},
+                'success':function (e) {
+                    if(e.status === 1){
+                        $(this).parent().parent().remove();
+                        layer.msg('删除成功');
+                    }
+                }.bind(this)
+            })
+        })
+    })
+</script>
+{/block}
